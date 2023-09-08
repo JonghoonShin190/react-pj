@@ -10,30 +10,41 @@ function AcaInfo() {
   const [isExamModalOpen, setIsExamModalOpen] = useState(false);
   const [isCertModalOpen, setIsCertModalOpen] = useState(false);
 
+  // 각 버튼에 대한 클릭 여부를 추적하는 상태를 추가합니다.
+  const [allButtonClicked, setAllButtonClicked] = useState(false);
+  const [examButtonClicked, setExamButtonClicked] = useState(false);
+  const [certButtonClicked, setCertButtonClicked] = useState(false);
+
   // 각 모달 열기 함수를 정의합니다.
   const openAllModal = () => {
     setIsAllModalOpen(true);
+    setAllButtonClicked(true); // 버튼 클릭 여부를 true로 변경
   };
 
   const openExamModal = () => {
     setIsExamModalOpen(true);
+    setExamButtonClicked(true); // 버튼 클릭 여부를 true로 변경
   };
 
   const openCertModal = () => {
     setIsCertModalOpen(true);
+    setCertButtonClicked(true); // 버튼 클릭 여부를 true로 변경
   };
 
   // 각 모달 닫기 함수를 정의합니다.
   const closeAllModal = () => {
     setIsAllModalOpen(false);
+    setAllButtonClicked(false); // 버튼 클릭 여부를 false로 변경
   };
 
   const closeExamModal = () => {
     setIsExamModalOpen(false);
+    setExamButtonClicked(false); // 버튼 클릭 여부를 false로 변경
   };
 
   const closeCertModal = () => {
     setIsCertModalOpen(false);
+    setCertButtonClicked(false); // 버튼 클릭 여부를 false로 변경
   };
 
   return (
@@ -42,9 +53,25 @@ function AcaInfo() {
       <BodyContainer>
         <InfoText>검색 옵션</InfoText>
         {/* 각 버튼을 클릭하면 해당 모달이 열리도록 수정합니다. */}
-        <CustomButton onClick={openAllModal}>전체</CustomButton>
-        <CustomButton onClick={openExamModal}>수험</CustomButton>
-        <CustomButton onClick={openCertModal}>자격증</CustomButton>
+        <CustomButton
+          onClick={openAllModal}
+          clicked={allButtonClicked}
+        >
+          전체
+        </CustomButton>
+        <CustomButton
+          onClick={openExamModal}
+          clicked={examButtonClicked}
+        >
+          수험
+        </CustomButton>
+        <CustomButton
+          onClick={openCertModal}
+          clicked={certButtonClicked}
+        >
+          자격증
+        </CustomButton>
+
       </BodyContainer>
       <BodyContainer style={{ marginTop: '3px' }}>
         ddd

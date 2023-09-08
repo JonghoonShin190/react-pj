@@ -1,4 +1,5 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
+
 
 export const BodyContainer = styled.main`
   padding: 20px;
@@ -20,19 +21,31 @@ export const TableOfContents = styled.ul`
 `;
 
 export const CustomButton = styled.button`
-  background-image: linear-gradient(45deg, #9370DB 30%, #0288d1 90%);
+  background-color: #bebebe;
   color: white;
   padding: 10px 20px;
   border: none;
   border-radius: 4px;
   cursor: pointer;
   margin: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.0);
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
 
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.0); /* 그림자 스타일 및 투명도 조절 */
-  transition: box-shadow 0.3s ease; /* 그림자 변화에 부드러운 효과 추가 */
+  ${(props) =>
+    props.clicked &&
+    css`
+      background-image: linear-gradient(45deg, #9370DB 30%, #0288d1 90%);
+    `}
 
   &:hover {
-    background-color: #6A5ACD;
-    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.4); /* 마우스를 올렸을 때 그림자 효과 증가 */
+    cursor: pointer;
+    cursor: pointer;
+    transform: scale(1.04); /* 확대 효과 추가 */
+    background-image: linear-gradient(45deg, #9370DB 30%, #0288d1 90%);
+    box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+  }
+
+  &:active {
+    background-color: #483d8b;
   }
 `;
