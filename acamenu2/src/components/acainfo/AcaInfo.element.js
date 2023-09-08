@@ -15,7 +15,7 @@ export const InfoText = styled.p`
 `;
 
 /* 테이블 목차 스타일 */
-export const TableOfContents = styled.ul`
+export const TableDesign = styled.ul`
   list-style-type: none; /* 목차 스타일 제거 */
   padding-left: 20px; /* 들여쓰기 제거 */
 `;
