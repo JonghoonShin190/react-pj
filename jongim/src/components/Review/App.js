@@ -1,16 +1,16 @@
 import { useEffect, useState } from 'react';
-import NewsList from './NewsList';
-import { getNews, updateNews, deleteNews } from '../api';
+import ReviewList from '../Review/ReviewList';
+import { getReview, updateReview, deleteReview } from '../../api';
 import Button from '@mui/material/Button';
 import ModeIcon from '@mui/icons-material/Mode';
-import AverageStringBar from './AverageStringBar';
+import AverageString from './AverageString';
 import Box from '@mui/material/Box';
 import StarIcon from '@mui/icons-material/Star';
 import Typography from '@mui/material/Typography';
 import { BrowserRouter as Router, Route, Switch, Link } from 'react-router-dom';
-import NewsForm, { handleCreateSuccess } from './NewsForm';
+import ReviewForm, { handleCreateSuccess } from '../ReviewWriteForm/ReviewForm';
 import React from 'react';
-import { createNews } from '../api';
+import { createReview } from '../../api';
 
 
 
@@ -23,19 +23,21 @@ function App() {
   const [hasNext, setHasNext] = useState(false);  //추가페이지 존재여부
 
   const [items, setItems] = useState([]);
-  const sortedItems = items.sort((a, b) => b[order] - a[order]);
+  // console.log(items);
+  const sortedItems = [...items].sort((a, b) => b[order] - a[order]);
+  // console.log(sortedItems)
 
   const [isLoading, setIsLoading] = useState(false); //로딩 처리
   const [loadingError, setIsLoadingError] = useState(null);
 
   const handleNewestClick = () => setOrder('date') //정렬
-  const handleBestClick = () => setOrder('rating')
+  const handleBestClick = () => setOrder('avgRating')
 
 
   //삭제
   const handleDelete = async (aid) => {
     try {
-      deleteNews(aid);
+      await deleteReview(aid); 
       const nextItems = items.filter((item) => item.aid !== aid);
       setItems(nextItems);
     } catch (error) {
@@ -52,7 +54,7 @@ function App() {
     try {
       setIsLoading(true); //로딩중을 패치전 disabled (true)
       setIsLoadingError(null);
-      result = await getNews(options);
+      result = await getReview(options);
     } catch (error) {
       setIsLoadingError(error);
       return;
@@ -61,16 +63,19 @@ function App() {
     }
 
 
-    const { paging, news } = result;
+    const { paging, review } = result;
     setIsLoading(false);
 
     if (options.offset === 0) {
-      setItems(news); // 0, 6
+      setItems(review); // 0, 6
     } else {
-      setItems(prevItems => [...prevItems, ...news]);
-
+      if (Array.isArray(review)) {
+        setItems(prevItems => [...prevItems, ...review]);
+      } else {
+        console.error('Review data is not an array:', review);
+      }
     }
-    setOffset(options.offset + options.limit);  //시작위치 변경
+    setOffset(options.offset + options.limit);
 
     let parsePaging = JSON.parse(paging);
     setHasNext(parsePaging.hasNext);
@@ -79,23 +84,42 @@ function App() {
 
 
   const handleLoadMore = async () => {
-    handleLoad({ order, offset, limit: LIMIT });
+    const newOffset = offset + LIMIT;
+    handleLoad({ order, offset: newOffset, limit: LIMIT });
   };
 
 
-  const handleUpdateSuccess = (news) => {
+  const handleUpdateSuccess = (review) => {
     setItems((prevItems) => {
-      const splitIdx = prevItems.findIndex((item) => item.aid === news.aid);
+      const splitIdx = prevItems.findIndex((item) => item.aid === review.aid);
       return [
         ...prevItems.slice(0, splitIdx),
-        news,
+        review,
         ...prevItems.slice(splitIdx + 1),
       ];
     });
   };
 
   useEffect(() => {
-    handleLoad({ order, offset: 0, limit: LIMIT });
+    async function fetchData() {
+      try {
+        setIsLoading(true);
+        setIsLoadingError(null);
+        const result = await getReview({ order, offset: 0, limit: LIMIT });
+        console.log(result)
+        setItems(result.news);
+        const { paging} = result;        
+        setOffset(LIMIT); // 시작 위치 설정
+        let parsePaging = JSON.parse(paging);
+        setHasNext(parsePaging.hasNext);
+      } catch (error) {
+        setIsLoadingError(error);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    fetchData();
   }, [order]);
 
   return (
@@ -155,7 +179,7 @@ function App() {
                       </Typography>
                     </div>
                   </div>
-                  <AverageStringBar rating={4} />
+                  <AverageString rating={4} />
                 </div>
                 <div style={{
                   display: 'flex',
@@ -196,9 +220,9 @@ function App() {
                 </div>
               </Box>
 
-              <NewsList
+              <ReviewList
                 items={sortedItems}
-                onUpdate={updateNews}
+                onUpdate={updateReview}
                 onUpdateSuccess={handleUpdateSuccess}
                 onDelete={handleDelete}
               />
@@ -212,7 +236,7 @@ function App() {
                   sx={{
                     mt: 3,
                     mb: 2,
-                    ml: '440px',
+                    ml: '350px',
                     backgroundImage: 'linear-gradient(45deg, #9370DB 30%, #0288d1 90%)',
                     color: 'white',
                     fontSize: '12px',
@@ -229,8 +253,8 @@ function App() {
         </Route>
         <Route path="/write">
           {/* Write Review Page */}
-          {/* NewsForm.js 컴포넌트가 여기에 들어갑니다. */}
-          <NewsForm onSubmit={createNews} onSubmitSuccess={handleCreateSuccess} />
+          {/* ReviewForm.js 컴포넌트가 여기에 들어갑니다. */}
+          <ReviewForm onSubmit={createReview} onSubmitSuccess={handleCreateSuccess} />
         </Route>
       </Switch>
     </Router>

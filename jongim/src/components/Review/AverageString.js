@@ -19,7 +19,7 @@ function RatingItem({ title, rating }) {
   );
 }
 
-function AverageStringBar({ rating }) {
+function AverageString({ rating }) {
   return (
     <div style={{ display: 'flex', flexDirection:'column' }}>
       {/* Use the new component */}
@@ -32,4 +32,4 @@ function AverageStringBar({ rating }) {
   );
 }
 
-export default AverageStringBar;
+export default AverageString;
