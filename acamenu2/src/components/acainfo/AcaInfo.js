@@ -1,65 +1,150 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { Link } from 'react-router-dom';
+
 import MainHeader from '../main/MainHeader';
 import MainFooter from '../main/MainFooter';
-import Modal from '../modal/Modal'; // Modal 컴포넌트 파일 import
 import AcaInfoHamsu from './AcaInfoHamsu'
+import AcaList from './AcaList';
+
+import ModalTest from '../AcaInfoModal/Modal';
+import ModalHamsu from '../AcaInfoModal/ModalHamsu';
+
+import Button from '@mui/material/Button';
 import { BodyContainer, InfoText, CustomButton, TableDesign } from './AcaInfo.element'; // 스타일 import
 
 function AcaInfo() {
   const {
-    isAllModalOpen,
-    isSuheomModalOpen,
-    isLicenceModalOpen,
+    handleNewestClick,
+    handleBestClick,
+    handleDelete,
+    handleLoadMore,
+    handleUpdateSuccess,
+    hasNext,
+    sortedItems,
+    isLoading,
+    updateReview
+  } = AcaInfoHamsu();
+
+  const {
     allButtonClicked,
     suheomButtonClicked,
     licenceButtonClicked,
+    openAllModal,
+    openSuheomModal,
+    openLicenceModal,
+    isAllModalOpen,
+    isSuheomModalOpen,
+
+    isLicenceModalOpen,
     suheomClick1,
     suheomClick2,
     suheomClick3,
     licenceClick1,
     licenceClick2,
     licenceClick3,
-    openAllModal,
-    openSuheomModal,
-    openLicenceModal,
     closeAllModal,
     closeSuheomModal,
     closeLicenceModal,
-  } = AcaInfoHamsu();
+  } = ModalHamsu();
+
   return (
     <div>
       <MainHeader />
       <BodyContainer>
-        <InfoText>검색 옵션</InfoText>
-        {/* 각 버튼을 클릭하면 해당 모달이 열리도록 수정합니다. */}
+        <InfoText>학원 리스트</InfoText>
+
         <CustomButton
           onClick={openAllModal}
-          clicked={allButtonClicked}
-        >
+          clicked={allButtonClicked}>
           전체
         </CustomButton>
+
+
         <CustomButton
           onClick={openSuheomModal}
-          clicked={suheomButtonClicked}
-        >
+          clicked={suheomButtonClicked}>
           수험
         </CustomButton>
+
         <CustomButton
           onClick={openLicenceModal}
-          clicked={licenceButtonClicked}
-        >
+          clicked={licenceButtonClicked}>
           자격증
         </CustomButton>
 
       </BodyContainer>
       <BodyContainer style={{ marginTop: '3px' }}>
-        ddd
+        <div style={{
+          display: 'flex',
+          justifyContent: 'flex-end'
+        }}>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={handleNewestClick}
+            className="button"
+            sx={{
+              mt: 3,
+              mb: 2,
+              marginRight: '20px',
+              backgroundImage: 'linear-gradient(45deg, #9370DB 30%, #0288d1 90%)',
+              color: 'white',
+              fontSize: '12px',
+              width: 'auto'
+            }}>
+            최신순
+          </Button>
+          <Button fullWidth
+            variant="contained"
+            color="primary"
+            onClick={handleBestClick}
+            className="button"
+            sx={{
+              mt: 3,
+              mb: 2,
+              backgroundImage: 'linear-gradient(45deg, #9370DB 30%, #0288d1 90%)',
+              color: 'white',
+              fontSize: '12px',
+              width: 'auto'
+            }}>
+            평점 높은순
+          </Button>
+
+        </div>
+        <AcaList
+          items={sortedItems}
+          onUpdate={updateReview}
+          onUpdateSuccess={handleUpdateSuccess}
+          onDelete={handleDelete}
+        />
+        {hasNext && (
+          <Button fullWidth
+            variant="contained"
+            color="primary"
+            disabled={isLoading}
+            onClick={handleLoadMore}
+            className="button"
+            sx={{
+              mt: 3,
+              mb: 2,
+              ml: '350px',
+              backgroundImage: 'linear-gradient(45deg, #9370DB 30%, #0288d1 90%)',
+              color: 'white',
+              fontSize: '12px',
+              width: 'auto'
+            }}>
+            더보기
+          </Button>
+        )}
       </BodyContainer>
-      {/* 각 버튼에 대한 모달을 렌더링합니다. */}
+      <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+        <Link to="/AcaWriteForm" style={{ textDecoration: 'none' }}>
+          <CustomButton>학원 등록</CustomButton>
+        </Link>
+      </div>
       {
         isAllModalOpen && (
-          <Modal onClose={closeAllModal}>
-            {/* 모달 내용을 추가하세요 */}
+          <ModalTest onClose={closeAllModal}>
             <h2 style={{ margin: '3px' }}>전체 검색 옵션</h2>
             <TableDesign>
               <li>
@@ -67,13 +152,12 @@ function AcaInfo() {
               </li>
               <br />
             </TableDesign>
-          </Modal>
+          </ModalTest>
         )
       }
       {
         isSuheomModalOpen && (
-          <Modal onClose={closeSuheomModal}>
-            {/* 모달 내용을 추가하세요 */}
+          <ModalTest onClose={closeSuheomModal}>
             <h2 style={{ margin: '3px' }}>수험 검색 옵션</h2>
             <TableDesign>
               <li>
@@ -87,13 +171,12 @@ function AcaInfo() {
               </li>
               <br />
             </TableDesign>
-          </Modal>
+          </ModalTest>
         )
       }
       {
         isLicenceModalOpen && (
-          <Modal onClose={closeLicenceModal}>
-            {/* 모달 내용을 추가하세요 */}
+          <ModalTest onClose={closeLicenceModal}>
             <h2 style={{ margin: '3px' }}>자격증 검색 옵션</h2>
             <TableDesign>
               <li>
@@ -107,7 +190,7 @@ function AcaInfo() {
               </li>
               <br />
             </TableDesign>
-          </Modal>
+          </ModalTest>
         )
       }
       <MainFooter />

@@ -1,6 +1,5 @@
 import styled, { css } from 'styled-components';
 
-
 export const BodyContainer = styled.main`
   padding: 20px;
   background-color: #f0f0f0;

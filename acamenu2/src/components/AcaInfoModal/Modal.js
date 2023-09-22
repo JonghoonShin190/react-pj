@@ -1,7 +1,7 @@
-import React from 'react';
 import styled from 'styled-components';
+import React from 'react';
 
-const ModalContainer = styled.div`
+export const ModalContainer = styled.div`
   background-color: #fff;
   padding: 20px;
   border-radius: 4px;
@@ -11,7 +11,7 @@ const ModalContainer = styled.div`
   position: relative; /* 부모 요소에 대한 상대 위치로 설정 */
 `;
 
-const ModalOverlay = styled.div`
+export const ModalOverlay = styled.div`
   background-color: rgba(0, 0, 0, 0.6);
   position: fixed;
   top: 0;
@@ -23,7 +23,7 @@ const ModalOverlay = styled.div`
   align-items: center;
 `;
 
-const CloseButton = styled.button`
+export const CloseButton = styled.button`
   background-image: linear-gradient(45deg, #9370DB 30%, #0288d1 90%);
   color: white;
   padding: 10px 20px;
@@ -44,8 +44,8 @@ const CloseButton = styled.button`
   }
 `;
 
-
-const Modal = ({ onClose, children }) => {
+export const Modal = ({ onClose, children }) => {
+  console.log('모달이 열렸습니다.');
   return (
     <ModalOverlay onClick={onClose}>
       <ModalContainer onClick={(e) => e.stopPropagation()}>
