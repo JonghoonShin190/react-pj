@@ -4,11 +4,13 @@ import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import TextareaAutosize from '@mui/material/TextareaAutosize';
 import { styled } from '@mui/system';
+import { createReview } from "../../Api";
 
 const INITIAL_VALUES = {
   title: "",
-  logo: "",
+  img: "",
   content: "",
+  avgRating: 0,
 };
 
 const StyledForm = styled('form')`
@@ -75,7 +77,6 @@ export default function ReviewForm({
   const [submittingError, setSubmittingError] = useState(null);
   const [selectedFileName, setSelectedFileName] = useState('파일을 선택하세요.'); // 초기값 설정
 
-
   const history = useHistory();
 
   const handleChange = (name, value) => {
@@ -118,7 +119,7 @@ export default function ReviewForm({
         // 이미지 업로드가 성공한 경우
         const imageUrl = await response.json(); // 서버에서 반환된 이미지 URL
         // imageURL을 상태에 저장하거나 필요한 작업을 수행합니다.
-        handleChange("logo", imageUrl); // imageURL을 logo 속성에 저장합니다.
+        handleChange("img", imageUrl); // imageURL을 logo 속성에 저장합니다.
       } else {
         // 이미지 업로드 실패 처리
         console.error("Image upload failed.");
@@ -134,7 +135,7 @@ export default function ReviewForm({
     formData.append("title", values.title);
     formData.append("content", values.content);
 
-    formData.append("logo", values.logo);
+    formData.append("img", values.img);
 
     console.log(values);
 
@@ -142,20 +143,17 @@ export default function ReviewForm({
     try {
       setSubmittingError(null);
       setIsSubmitting(true);
-      result = await onSubmit(formData);
+      result = await createReview(formData); // createReview 함수를 호출하고 반환값을 저장
+      const { review } = result;
+      setValues(INITIAL_VALUES);
+      onSubmitSuccess(review);
     } catch (error) {
       setSubmittingError(error);
-      return;
     } finally {
       setIsSubmitting(false);
     }
 
-    const { review } = result;
-    setValues(INITIAL_VALUES);
-    onSubmitSuccess(review);
-
   };
-
 
   return (
     <div>
@@ -188,6 +186,7 @@ export default function ReviewForm({
             <input
               type="file"
               accept="image/*"
+              name="img"
               onChange={(e) => {
                 const fileName = e.target.files[0]?.name || '파일을 선택하세요.';
                 setSelectedFileName(fileName);

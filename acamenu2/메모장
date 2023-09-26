@@ -1,0 +1,14 @@
+<div style={{ display: 'flex' , justifyContent: 'space-between' , }}>
+    <div>
+        <div style={{ display: 'flex' , alignItems: 'center' , }}>
+            <StarIcon style={{ color: 'gold' , fontSize: 50 }} />
+            <Typography variant="h6" component="div" sx={{ fontSize: '40px' , fontWeight: 'bold' , marginLeft: '10px' ,
+                }}>
+                {totalAverageRating.toFixed(1)}
+            </Typography>
+        </div>
+        <div style={{ display: 'flex' , alignItems: 'center' , }}>
+            <Typography variant="body1" component="p">
+                전체 평균 점수
+            </Typography>
+        </div>
